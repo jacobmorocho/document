@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.IsValidate = void 0;
+exports.schema = void 0;
 const ajv_1 = __importDefault(require("ajv"));
 const ajv = new ajv_1.default();
 const schema = {
@@ -18,14 +18,6 @@ const schema = {
     required: ["direccion", "provincia", "departamento", "distrito", "ubigueo"],
     additionalProperties: false
 };
+exports.schema = schema;
 const validate = ajv.compile(schema);
-const IsValidate = (data) => {
-    if (validate(data)) {
-        return [true, data];
-    }
-    else {
-        return [true, validate.errors];
-    }
-};
-exports.IsValidate = IsValidate;
 //# sourceMappingURL=Address.js.map

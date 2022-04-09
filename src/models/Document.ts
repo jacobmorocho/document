@@ -1,15 +1,13 @@
 import { Company } from "./Company"
-import { Detail } from "./Detail"
 import { FormaPago } from "./FormaPago"
-import { Legend } from "./Legend"
-import Ajv, { JSONSchemaType } from "ajv"
-const ajv = new Ajv()
+import { JSONSchemaType } from "ajv"
 interface Document {
     ublVersion: string,
     tipoOperacion: string,
     tipoDoc: string,
+    idDocument: string,
     serie: string,
-    correlativo: string,
+    correlativo: number,
     fechaEmision: string,
     tipoMoneda: string,
     mtoOperGravadas: number,
@@ -18,6 +16,7 @@ interface Document {
     totalImpuestos: number,
     subTotal: number,
     mtoImpVenta: number,
+    observacion: string,
     formaPago: FormaPago,
     client: Company,
     company: Company,
@@ -26,53 +25,51 @@ interface Document {
 
 }
 const schema: JSONSchemaType<Document> = {
-    type: "object",
-    properties: {
-        ublVersion: { type: "string" },
-        tipoOperacion: { type: "string" },
-        tipoDoc: { type: "string" },
-        serie: { type: "string" },
-        correlativo: { type: "string" },
-        fechaEmision: { type: "string" },
-        tipoMoneda: { type: "string" },
-        mtoOperGravadas: { type: "number" },
-        mtoIGV: { type: "number" },
-        valorVenta: { type: "number" },
-        totalImpuestos: { type: "number" },
-        subTotal: { type: "number" },
-        mtoImpVenta: { type: "number" },
-        client: { $ref: '#definitions/client' },
-        company: { $ref: '#definitions/client' },
-        formaPago: { $ref: '#definitions/formaPago' },
-        legends: {
-            type: 'array',
-            items: {
-                $ref: '#definitions/legend',
-                type: "object"
-            },
-        },
-        details: {
-            type: 'array',
-            items: {
-                $ref: '#definitions/detail',
-                type: "object"
-            },
-        },
-
-    },
-    required: ["ublVersion", "tipoOperacion", "tipoDoc"],
     definitions: {
         client: {
             type: 'object',
+            "$id": "#definitions/client",
             properties: {
-                ruc: { type: "string" },
-                razonSocial: { type: "string" },
+                ruc: {
+                    type: "string",
+                    allOf: [
+                        { "minLength": 11 },
+                        { "maxLength": 11 }
+                    ]
+                },
+                razonSocial: { type: "string", },
                 nombreComercial: { type: "string" },
-                address: { $ref: '#definitions/address' }
+                address: { $ref: '#definitions/address1' }
             },
             definitions: {
                 address: {
                     type: 'object',
+                    "$id": "#definitions/address1",
+                    properties: {
+                        direccion: { type: "string" },
+                        provincia: { type: "string" },
+                        departamento: { type: "string" },
+                        distrito: { type: "string" },
+                        ubigueo: { type: "string" },
+                    },
+                    required: [],
+                },
+            },
+            required: [],
+        },
+        company: {
+            type: 'object',
+            "$id": "#definitions/company",
+            properties: {
+                ruc: { type: "string" },
+                razonSocial: { type: "string" },
+                nombreComercial: { type: "string" },
+                address: { $ref: '#definitions/address2' }
+            },
+            definitions: {
+                address: {
+                    type: 'object',
+                    "$id": "#definitions/address2",
                     properties: {
                         direccion: { type: "string" },
                         provincia: { type: "string" },
@@ -87,6 +84,7 @@ const schema: JSONSchemaType<Document> = {
         },
         formaPago: {
             type: "object",
+            "$id": "#definitions/formaPago",
             properties: {
                 moneda: { type: "string" },
                 tipo: { type: "string" },
@@ -96,6 +94,7 @@ const schema: JSONSchemaType<Document> = {
         },
         detail: {
             type: 'object',
+            "$id": "#definitions/detail",
             properties: {
                 codProducto: { type: "string" },
                 unidad: { type: "string" },
@@ -114,6 +113,7 @@ const schema: JSONSchemaType<Document> = {
         },
         legend: {
             type: 'object',
+            "$id": "#definitions/legend",
             properties: {
                 code: { type: "string" },
                 value: { type: "string" },
@@ -121,15 +121,90 @@ const schema: JSONSchemaType<Document> = {
             required: [],
         }
     },
-}
-const validate = ajv.compile(schema)
+    type: "object",
+    properties: {
+        idDocument: {
+            type: "string",
+        },
+        ublVersion: {
+            type: "string",
+            allOf: [
+                { "minLength": 1 },
+                { "maxLength": 3 }
+            ]
+        },
+        tipoOperacion: {
+            type: "string",
+            allOf: [
+                { "minLength": 4 },
+                { "maxLength": 4 }
+            ]
+        },
+        tipoDoc: {
+            type: "string",
+            allOf: [
+                { "minLength": 2 },
+                { "maxLength": 2 }
+            ]
+        },
+        serie: {
+            type: "string",
+            allOf: [
+                { "minLength": 4 },
+                { "maxLength": 4 }
+            ]
+        },
+        correlativo: {
+            type: "number",
+            allOf: [
+                { "minLength": 1 },
+                { "maxLength": 20 }
+            ]
+        },
+        fechaEmision: {
+            type: "string",
+            allOf: [
+                { "minLength": 5 },
+                { "maxLength": 30 }
+            ]
+        },
+        tipoMoneda: {
+            type: "string",
+            allOf: [
+                { "minLength": 2 },
+                { "maxLength": 3 }
+            ]
+        },
+        mtoOperGravadas: { type: "number", "minimum": 0, },
+        mtoIGV: { type: "number", "minimum": 0, },
+        valorVenta: { type: "number", "minimum": 0, },
+        totalImpuestos: { type: "number", "minimum": 0, },
+        subTotal: { type: "number", "minimum": 0, },
+        mtoImpVenta: { type: "number", "minimum": 0, },
+        formaPago: { $ref: '#definitions/formaPago' },
+        client: { $ref: '#definitions/client' },
+        company: { $ref: '#definitions/company' },
+        observacion: {
+            type: "string",
+        },
+        legends: {
+            type: 'array',
+            items: {
+                $ref: '#definitions/legend',
+                type: "object"
+            },
+        },
+        details: {
+            type: 'array',
+            items: {
+                $ref: '#definitions/detail',
+                type: "object"
+            },
+        },
 
-const IsValidate = (data) => {
-    if (validate(data)) {
-
-        return [true, data]
-    } else {
-        return [true, validate.errors]
-    }
+    },
+    required: ["ublVersion", "tipoOperacion", "tipoDoc", "serie",
+        "fechaEmision", "tipoMoneda", "mtoOperGravadas", "mtoIGV", "valorVenta", "totalImpuestos",
+        "subTotal", "mtoImpVenta", "formaPago", "client", "company", "legends", "details"]
 }
-export { Document, IsValidate }
+export { Document, schema }

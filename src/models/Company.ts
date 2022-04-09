@@ -1,6 +1,6 @@
 import { Address } from "./Address";
-import Ajv, { JSONSchemaType } from "ajv"
-const ajv = new Ajv()
+import { JSONSchemaType } from "ajv"
+
 interface Company {
     ruc: string,
     razonSocial: string,
@@ -19,6 +19,7 @@ const schema: JSONSchemaType<Company> = {
     definitions: {
         address: {
             type: 'object',
+            "$id": '#definitions/address',
             properties: {
                 direccion: { type: "string" },
                 provincia: { type: "string" },
@@ -30,14 +31,7 @@ const schema: JSONSchemaType<Company> = {
         },
     },
 }
-const validate = ajv.compile(schema)
 
-const IsValidate = (data) => {
-    if (validate(data)) {
 
-        return [true, data]
-    } else {
-        return [true, validate.errors]
-    }
-}
-export { Company, IsValidate }
+
+export { Company, schema }

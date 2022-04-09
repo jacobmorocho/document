@@ -23,7 +23,7 @@
         }
     },
     "company": {
-        "ruc": 20000000001,
+        "ruc": "20000000001",
         "razonSocial": "Mi empresa",
         "nombreComercial": "Mi empresa",
         "address": {

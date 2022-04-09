@@ -21,12 +21,5 @@ const schema: JSONSchemaType<Address> = {
 }
 const validate = ajv.compile(schema)
 
-const IsValidate = (data) => {
-    if (validate(data)) {
 
-        return [true, data]
-    } else {
-        return [true, validate.errors]
-    }
-}
-export { Address, IsValidate }
+export { Address, schema }

@@ -1,5 +1,5 @@
-import Ajv, { JSONSchemaType } from "ajv"
-const ajv = new Ajv()
+import { JSONSchemaType } from "ajv"
+
 
 interface Legend {
     code: string,
@@ -15,14 +15,6 @@ const schema: JSONSchemaType<Legend> = {
     required: ["code", "value"],
     additionalProperties: false
 }
-const validate = ajv.compile(schema)
 
-const IsValidate = (data) => {
-    if (validate(data)) {
 
-        return [true, data]
-    } else {
-        return [true, validate.errors]
-    }
-}
-export { Legend, IsValidate }
+export { Legend, schema }

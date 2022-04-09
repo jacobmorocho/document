@@ -1,6 +1,5 @@
 
-import Ajv, { JSONSchemaType } from "ajv"
-const ajv = new Ajv()
+import { JSONSchemaType } from "ajv"
 interface Detail {
     codProducto: string,
     unidad: string,
@@ -36,14 +35,5 @@ const schema: JSONSchemaType<Detail> = {
         "porcentajeIgv", "igv", "tipAfeIgv", "totalImpuestos", "mtoPrecioUnitario"],
     additionalProperties: false
 }
-const validate = ajv.compile(schema)
 
-const IsValidate = (data) => {
-    if (validate(data)) {
-
-        return [true, data]
-    } else {
-        return [true, validate.errors]
-    }
-}
-export { Detail, IsValidate }
+export { Detail, schema }
