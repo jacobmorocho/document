@@ -1,0 +1,65 @@
+{
+    "ublVersion": "2.1",
+    "tipoOperacion": "0101",
+    "tipoDoc": "03",
+    "serie": "B001",
+    "correlativo": "1",
+    "fechaEmision": "2021-01-27T00:00:00-05:00",
+    "formaPago": {
+        "moneda": "PEN",
+        "tipo": "Contado"
+    },
+    "tipoMoneda": "PEN",
+    "client": {
+        "tipoDoc": "6",
+        "numDoc": 20000000002,
+        "rznSocial": "Cliente",
+        "address": {
+            "direccion": "Direccion cliente",
+            "provincia": "LIMA",
+            "departamento": "LIMA",
+            "distrito": "LIMA",
+            "ubigueo": "150101"
+        }
+    },
+    "company": {
+        "ruc": 20000000001,
+        "razonSocial": "Mi empresa",
+        "nombreComercial": "Mi empresa",
+        "address": {
+            "direccion": "Direccion empresa",
+            "provincia": "LIMA",
+            "departamento": "LIMA",
+            "distrito": "LIMA",
+            "ubigueo": "150101"
+        }
+    },
+    "mtoOperGravadas": 100,
+    "mtoIGV": 18,
+    "valorVenta": 100,
+    "totalImpuestos": 18,
+    "subTotal": 118,
+    "mtoImpVenta": 118,
+    "details": [
+        {
+            "codProducto": "P001",
+            "unidad": "NIU",
+            "descripcion": "PRODUCTO 1",
+            "cantidad": 2,
+            "mtoValorUnitario": 50,
+            "mtoValorVenta": 100,
+            "mtoBaseIgv": 100,
+            "porcentajeIgv": 18,
+            "igv": 18,
+            "tipAfeIgv": 10,
+            "totalImpuestos": 18,
+            "mtoPrecioUnitario": 59
+        }
+    ],
+    "legends": [
+        {
+            "code": "1000",
+            "value": "SON CIENTO DIECIOCHO CON 00/100 SOLES"
+        }
+    ]
+}
