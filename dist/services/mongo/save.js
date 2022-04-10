@@ -22,7 +22,6 @@ const Save = async (body) => {
                 else {
                     document.correlativo = models[0].correlativo + 1;
                 }
-                console.log(models);
                 document.idDocument = `${document.company.ruc}-${document.serie}-${document.correlativo}`;
                 document.save()
                     .then(item => {

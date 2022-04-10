@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsc && node dist/app.js",
     "start": " node dist/app.js",
     "postinstall": "tsc"
   },
@@ -19,6 +21,7 @@
   "homepage": "https://github.com/jacobmorocho/document#readme",
   "dependencies": {
     "ajv": "^8.11.0",
+    "axios": "^0.26.1",
     "body-parser": "^1.20.0",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",

@@ -160,6 +160,9 @@ const schema = {
         formaPago: { $ref: '#definitions/formaPago' },
         client: { $ref: '#definitions/client' },
         company: { $ref: '#definitions/company' },
+        observacion: {
+            type: "string",
+        },
         legends: {
             type: 'array',
             items: {

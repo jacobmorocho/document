@@ -1,0 +1,24 @@
+{
+    "tipoOperacion": "1014",
+    "tipoDoc": "01",
+    "serie": "B001",
+    "fechaEmision": "2022-04-09T05:00:00.000Z",
+    "tipoMoneda": "PEN",
+     
+    "formaPago": {
+        "moneda": "PEN",
+        "tipo": "Contado"
+    },
+    "client": {
+        "ruc": "20000000003",
+        "razonSocial": "Mi empresa",
+        "nombreComercial": "Mi empresa"        
+    },
+    "company": {
+        "ruc": "20000000001",
+        "razonSocial": "Mi empresa",
+        "nombreComercial": "Mi empresa"        
+    },
+    "idDocument": "20000000001-B001-9",
+    "__v": 0
+}
