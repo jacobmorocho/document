@@ -1,6 +1,6 @@
 import { createInvoice } from "../services/voucher/document";
 import fs from 'fs';
-import { stringify } from "querystring";
+import tmp from 'tmp';
 const pdfController = () => {
     const Dowload = (req, res) => {
         const invoice = {
@@ -30,24 +30,27 @@ const pdfController = () => {
             paid: 0,
             invoice_nr: 1234
         };
-        console.log("__dirname", __dirname);
-        var dir = './tmp';
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir);
-            console.log("directore create")
-        }
-        let path = `./tmp/invoice.pdf`;
-        console.log("path", path)
-        createInvoice(invoice, path, () => {
-            const rs = fs.createReadStream(path);
-            res.setHeader("Content-Disposition", "attachment; invoice.pdf");
-            rs.pipe(res);
-            fs.unlink(path, function (err) {
-                if (err) throw err;
-                console.log('File deleted!');
-            });
 
-        });
+
+        try {
+
+            tmp.file(function (err, path, fd, cleanupCallback) {
+                if (err) throw err;
+                console.log("path", path)
+                createInvoice(invoice, path, () => {
+                    const rs = fs.createReadStream(path);
+                    res.setHeader("Content-Disposition", "attachment; invoice.pdf");
+                    rs.pipe(res);
+                    fs.unlink(path, function (err) {
+                        if (err) throw err;
+                        console.log('File deleted!');
+                    });
+                });
+            });
+        }
+        catch (err) {
+            console.log(err);
+        }
 
     }
     return {

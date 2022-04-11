@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.pdfController = void 0;
 const document_1 = require("../services/voucher/document");
 const fs_1 = __importDefault(require("fs"));
+const tmp_1 = __importDefault(require("tmp"));
 const pdfController = () => {
     const Dowload = (req, res) => {
         const invoice = {
@@ -35,22 +36,26 @@ const pdfController = () => {
             paid: 0,
             invoice_nr: 1234
         };
-        var dir = './tmp';
-        if (!fs_1.default.existsSync(dir)) {
-            fs_1.default.mkdirSync(dir);
-        }
-        let path = `./tmp/invoice.pdf`;
-        console.log("path", path);
-        (0, document_1.createInvoice)(invoice, path, () => {
-            const rs = fs_1.default.createReadStream(path);
-            res.setHeader("Content-Disposition", "attachment; invoice.pdf");
-            rs.pipe(res);
-            fs_1.default.unlink(path, function (err) {
+        try {
+            tmp_1.default.file(function (err, path, fd, cleanupCallback) {
                 if (err)
                     throw err;
-                console.log('File deleted!');
+                console.log("path", path);
+                (0, document_1.createInvoice)(invoice, path, () => {
+                    const rs = fs_1.default.createReadStream(path);
+                    res.setHeader("Content-Disposition", "attachment; invoice.pdf");
+                    rs.pipe(res);
+                    fs_1.default.unlink(path, function (err) {
+                        if (err)
+                            throw err;
+                        console.log('File deleted!');
+                    });
+                });
             });
-        });
+        }
+        catch (err) {
+            console.log(err);
+        }
     };
     return {
         dowload: Dowload
