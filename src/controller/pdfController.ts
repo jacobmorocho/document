@@ -30,6 +30,7 @@ const pdfController = () => {
             paid: 0,
             invoice_nr: 1234
         };
+        console.log("__dirname", __dirname);
         var dir = './tmp';
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir);
