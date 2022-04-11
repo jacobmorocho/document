@@ -1,17 +1,20 @@
 import express from 'express';
+import  fileUpload  from 'express-fileupload'
 import 'dotenv/config';
-import { router } from './routes/routeDocument';
+import { routeDocument } from './routes/routeDocument';
+import { routeraws } from './routes/routeAws';
 import expressListRoutes from 'express-list-routes';
 import listEndpoints from 'express-list-endpoints'
 import { connectToDatabase } from './db';
-import bodyParser  from 'body-parser';
+import bodyParser from 'body-parser';
 connectToDatabase();
 const app = express();
 const port = process.env.PORT;
-
+app.use(fileUpload());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/api', router);
+app.use('/api/document', routeDocument);
+app.use('/api/aws', routeraws);
 app.listen(port, err => {
     if (err) {
         return console.error(err);

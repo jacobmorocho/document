@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Auth = void 0;
 const axios_1 = __importDefault(require("axios"));
 const Auth = async (req, res, next) => {
+    console.log(req);
     if (!req.headers.authorization)
         return res.status(400).send({ "sRpta": "Se requiere ingresar token." });
     const headers = {

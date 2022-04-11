@@ -4,7 +4,7 @@ import * as Company from '../../models/Company';
 import * as Adress from '../../models/Address';
 import * as Legend from '../../models/Legend';
 import * as Detail from '../../models/Detail';
-import Ajv, { JSONSchemaType } from "ajv"
+import Ajv from "ajv"
 const ajv = new Ajv({allErrors: true})
 
 const documentvalidate = (schema) => {

@@ -3,7 +3,7 @@
     "tipoOperacion": "0101",
     "tipoDoc": "03",
     "serie": "B001",
-    "correlativo": "1",
+    "correlativo": "0",
     "fechaEmision": "2021-01-27T00:00:00-05:00",
     "formaPago": {
         "moneda": "PEN",
@@ -61,5 +61,7 @@
             "code": "1000",
             "value": "SON CIENTO DIECIOCHO CON 00/100 SOLES"
         }
-    ]
+    ],
+    "analitica": "",
+    "observaciones": ""
 }
