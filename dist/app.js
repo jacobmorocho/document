@@ -8,6 +8,7 @@ const express_fileupload_1 = __importDefault(require("express-fileupload"));
 require("dotenv/config");
 const routeDocument_1 = require("./routes/routeDocument");
 const routeAws_1 = require("./routes/routeAws");
+const routePdf_1 = require("./routes/routePdf");
 const express_list_endpoints_1 = __importDefault(require("express-list-endpoints"));
 const db_1 = require("./db");
 const body_parser_1 = __importDefault(require("body-parser"));
@@ -19,6 +20,7 @@ app.use(express_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 app.use('/api/document', routeDocument_1.routeDocument);
 app.use('/api/aws', routeAws_1.routeraws);
+app.use('/api/pdf', routePdf_1.routerpdf);
 app.listen(port, err => {
     if (err) {
         return console.error(err);

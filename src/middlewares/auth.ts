@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 const Auth = async (req, res, next) => {
-    console.log(req);
+
     if (!req.headers.authorization) return res.status(400).send({ "sRpta": "Se requiere ingresar token." });
     const headers = {
         headers: {
