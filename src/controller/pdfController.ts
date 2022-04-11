@@ -33,6 +33,7 @@ const pdfController = () => {
         var dir = './tmp';
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir);
+            console.log("directore create")
         }
         let path = `./tmp/invoice.pdf`;
         console.log("path", path)
