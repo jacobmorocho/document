@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const DocumentSchema = new Schema({
+    numDoc: String,
     ublVersion: String,
     tipoOperacion: String,
     tipoDoc: String,
@@ -11,22 +12,24 @@ const DocumentSchema = new Schema({
         unique: true
     },
     correlativo: Number,
-    fechaEmision: Date,
+    fechaEmision: String,
     tipoMoneda: String,
     mtoOperGravadas: Number,
     mtoIGV: Number,
     valorVenta: Number,
     totalImpuestos: Number,
+    totaDescuento: Number,
     subTotal: Number,
     mtoImpVenta: Number,
+    estado: String,
     formaPago: {
         moneda: String,
         tipo: String
     },
     client: {
-        ruc: String,
-        razonSocial: String,
-        nombreComercial: String,
+        numDoc: String,
+        rznSocial: String,
+        tipoDoc: String,
         address: {
             direccion: String,
             provincia: String,
@@ -47,10 +50,15 @@ const DocumentSchema = new Schema({
             ubigueo: String
         }
     },
-    legends: [
-
-    ],
+    legends: [],
     details: [],
+    note: {
+        guias: [],
+        codMotivo: String,
+        desMotivo: String,
+        numDocfectado: String,
+        tipDocAfectado: String,
+        parentID: String
+    }
 });
-export const CompetitionModel = mongoose.model('Documents', DocumentSchema,)
-
+export const DocumentModel = mongoose.model('Documents', DocumentSchema,)

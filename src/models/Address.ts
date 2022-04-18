@@ -17,7 +17,6 @@ const schema: JSONSchemaType<Address> = {
         ubigueo: { type: "string" },
     },
     required: ["direccion", "provincia", "departamento", "distrito", "ubigueo"],
-    additionalProperties: false
 }
 const validate = ajv.compile(schema)
 

@@ -1,6 +1,7 @@
 import { Company } from "./Company"
 import { FormaPago } from "./FormaPago"
 import { JSONSchemaType } from "ajv"
+import { Cliente } from "./Client"
 interface Document {
     ublVersion: string,
     tipoOperacion: string,
@@ -14,11 +15,12 @@ interface Document {
     mtoIGV: number,
     valorVenta: number,
     totalImpuestos: number,
+    totaDescuento: number,
     subTotal: number,
     mtoImpVenta: number,
     observacion: string,
     formaPago: FormaPago,
-    client: Company,
+    client: Cliente,
     company: Company,
     legends: any[],
     details: any[],
@@ -30,15 +32,15 @@ const schema: JSONSchemaType<Document> = {
             type: 'object',
             "$id": "#definitions/client",
             properties: {
-                ruc: {
+                numDoc: {
                     type: "string",
                     allOf: [
-                        { "minLength": 11 },
+                        { "minLength": 8 },
                         { "maxLength": 11 }
                     ]
                 },
                 razonSocial: { type: "string", },
-                nombreComercial: { type: "string" },
+                tipoDoc: { type: "string" },
                 address: { $ref: '#definitions/address1' }
             },
             definitions: {
@@ -136,7 +138,7 @@ const schema: JSONSchemaType<Document> = {
         tipoOperacion: {
             type: "string",
             allOf: [
-                { "minLength": 4 },
+                { "minLength": 2 },
                 { "maxLength": 4 }
             ]
         },
@@ -155,11 +157,7 @@ const schema: JSONSchemaType<Document> = {
             ]
         },
         correlativo: {
-            type: "number",
-            allOf: [
-                { "minLength": 1 },
-                { "maxLength": 20 }
-            ]
+            type: "number", "minimum": 0
         },
         fechaEmision: {
             type: "string",
@@ -181,6 +179,7 @@ const schema: JSONSchemaType<Document> = {
         totalImpuestos: { type: "number", "minimum": 0, },
         subTotal: { type: "number", "minimum": 0, },
         mtoImpVenta: { type: "number", "minimum": 0, },
+        totaDescuento: { type: "number", "minimum": 0, },
         formaPago: { $ref: '#definitions/formaPago' },
         client: { $ref: '#definitions/client' },
         company: { $ref: '#definitions/company' },

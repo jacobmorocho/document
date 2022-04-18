@@ -4,7 +4,7 @@ exports.ListDocuents = void 0;
 const documentSchema_1 = require("../../schema/documentSchema");
 const ListDocuents = async (param) => {
     try {
-        const database = await documentSchema_1.CompetitionModel.find();
+        const database = await documentSchema_1.DocumentModel.find();
         return { status: true, data: database };
     }
     catch (error) {

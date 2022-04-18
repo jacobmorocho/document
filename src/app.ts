@@ -7,6 +7,8 @@ import { routerpdf } from './routes/routePdf';
 import listEndpoints from 'express-list-endpoints'
 import { connectToDatabase } from './db';
 import bodyParser from 'body-parser';
+import { routebilling } from './routes/routeBilling';
+import { routeXml } from './routes/routeXml'
 connectToDatabase();
 const app = express();
 const port = process.env.PORT;
@@ -15,7 +17,9 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api/document', routeDocument);
 app.use('/api/aws', routeraws);
-app.use('/api/pdf', routerpdf)
+app.use('/api/pdf', routerpdf);
+app.use('/api/billing', routebilling)
+app.use('/api/xml', routeXml)
 app.listen(port, err => {
     if (err) {
         return console.error(err);

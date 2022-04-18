@@ -16,7 +16,6 @@ const schema = {
         ubigueo: { type: "string" },
     },
     required: ["direccion", "provincia", "departamento", "distrito", "ubigueo"],
-    additionalProperties: false
 };
 exports.schema = schema;
 const validate = ajv.compile(schema);

@@ -1,10 +1,18 @@
-import { CompetitionModel } from "../../schema/documentSchema";
 
-const Search = () => {
+import { VoidedModel } from "../../schema/voidedSchema";
+import { DocumentModel } from "../../schema/documentSchema";
 
-    const Correlative = async (query) => {
-        const order = await CompetitionModel.find(query).sort({ correlativo: -1 }).limit(1);;
-        return order;
+const SearchDocument = () => {
+
+    const Correlative = async (doc): Promise<number> => {
+        let query = {};
+        query['serie'] = doc.serie;
+        query['company.ruc'] = doc.company.ruc;
+        let document = await DocumentModel.find(query).sort({ correlativo: -1 }).limit(1);
+        if (document && document.length > 0) {
+            return (document[0].correlativo + 1);
+        }
+        return 1;
     }
     const All = async (body) => {
 
@@ -58,14 +66,58 @@ const Search = () => {
                 '$lte': new Date(new Date(body.maxfechaEmision).setHours(23, 59, 59))
             }
         }
-        const documents = await CompetitionModel.find(query).sort({ correlativo: -1 }).limit(50).lean();
+        const documents = await DocumentModel.find(query).sort({ correlativo: -1 }).limit(50).lean();
         return documents;
+    }
+    const ById = async (id:any) => {
+        return await DocumentModel.findById(id);
+    }
+    const NoteByParent = async (parentId) => {
+        let query = {};
+        query['note.parentID'] = parentId;
+        let document = await DocumentModel.find(query).sort({ correlativo: -1 }).limit(1);
+        if (document && document.length > 0) {
+            return (document[0]);
+        }
+        return null;
     }
     return {
         Correlative: Correlative,
         All: All,
+        ById: ById,
+        NoteByParent
+    }
+}
+const SearchVoided = () => {
+
+    const Correlative = async (doc): Promise<number> => {
+        let query = {};
+        query['serie'] = doc.serie;
+        query['company.ruc'] = doc.company.ruc;
+        let document = await VoidedModel.find(query).sort({ correlativo: -1 }).limit(1);
+        if (document && document.length > 0) {
+            return (document[0].correlativo + 1);
+        }
+        return 1;
+    }
+
+    const ById = async (id) => {
+        return await VoidedModel.findById(id);
+    }
+    const ByParent = async (parentId) => {
+        let query = {};
+        query['parentDocument'] = parentId;
+        let document = await VoidedModel.find(query).sort({ correlativo: -1 }).limit(1);
+        if (document && document.length > 0) {
+            return (document[0]);
+        }
+        return null;
+    }
+    return {
+        Correlative: Correlative,
+        ById: ById,
+        ByParent
     }
 }
 
-
-export { Search }
+export { SearchDocument, SearchVoided }

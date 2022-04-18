@@ -15,7 +15,9 @@ const schema = {
         igv: { type: "number" },
         tipAfeIgv: { type: "number" },
         totalImpuestos: { type: "number" },
-        mtoPrecioUnitario: { type: "number" }
+        mtoPrecioUnitario: { type: "number" },
+        mtoDescuento: { type: "number" },
+        observacion: { type: "string" }
     },
     required: ["codProducto", "unidad", "descripcion",
         "cantidad", "mtoValorUnitario", "mtoValorVenta", "mtoBaseIgv",

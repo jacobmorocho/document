@@ -32,6 +32,7 @@ const Company = __importStar(require("../../models/Company"));
 const Adress = __importStar(require("../../models/Address"));
 const Legend = __importStar(require("../../models/Legend"));
 const Detail = __importStar(require("../../models/Detail"));
+const Client = __importStar(require("../../models/Client"));
 const ajv_1 = __importDefault(require("ajv"));
 const ajv = new ajv_1.default({ allErrors: true });
 const documentvalidate = (schema) => {
@@ -47,7 +48,7 @@ const documentvalidate = (schema) => {
         errors.push({ "entity": "Company.Adress", errors: ajv.errors });
     }
     /*client*/
-    if (!ajv.validate(Company.schema, schema.client)) {
+    if (!ajv.validate(Client.schema, schema.client)) {
         errors.push({ "entity": "client", errors: ajv.errors });
     }
     if (!ajv.validate(Adress.schema, schema.client.address)) {

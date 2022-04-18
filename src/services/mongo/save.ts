@@ -1,39 +1,27 @@
-import { CompetitionModel } from "../../schema/documentSchema";
+import { VoidedModel } from "../../schema/voidedSchema";
+import { DocumentModel } from "../../schema/documentSchema";
 import { documentvalidate } from "../../services/validate/documentvalidate";
-import { Search } from "./search";
-const Save = async (body) => {
-    return new Promise((resolve, reject) => {
-        let response = documentvalidate(body);
-        if (!response.status) {
-            reject(response);
-        } else {
-            var document = new CompetitionModel(body);
-            let query = {};
-            query['serie'] = document.serie;
-            query['company.ruc'] = document.company.ruc;
-            Search().Correlative(query).then((models) => {
-                if (models.length <= 0) {
-                    document.correlativo = 1
-                } else {
-                    document.correlativo = models[0].correlativo + 1;
-                }
-                document.idDocument = `${document.company.ruc}-${document.serie}-${document.correlativo}`;
-                document.save()
-                    .then(item => {
-                        resolve({
-                            status: true,
-                            messaje: "successfully",
-                            id: item._id
-                        });
-                    })
-                    .catch(err => {
-
-                        reject(err);
-                    });
-            }).catch(err => {
-                reject(err);
-            });
-        }
-    });
+import { SearchDocument, SearchVoided } from "./search";
+const SaveDocument = async (body) => {
+    let response = documentvalidate(body);
+    if (!response.status) {
+        return response;
+    } else {
+        var document = new DocumentModel(body);
+        document.correlativo = await SearchDocument().Correlative(document);
+        document.numDoc = `${document.serie}-${document.correlativo}`;
+        document.idDocument = `${document.company.ruc}-${document.serie}-${document.correlativo}`;
+        document.estado="REGISTRO"
+        return await document.save();
+    }
 }
-export { Save }
+const SaveVoided = async (body) => {
+    var document = new VoidedModel(body.document);
+    document.correlativo = await SearchVoided().Correlative(document);
+    document.parentDocument = body.doc._id;
+    document.idDocument = `${document.company.ruc}-${body.document.serie}-${document.correlativo}`;
+    document.sunatResponse.success = false;
+    document.sunatResponse.ticket = "";
+    return await document.save();
+}
+export { SaveDocument, SaveVoided }

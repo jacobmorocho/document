@@ -12,7 +12,9 @@ interface Detail {
     igv: number,
     tipAfeIgv: number,
     totalImpuestos: number,
-    mtoPrecioUnitario: number
+    mtoPrecioUnitario: number,
+    mtoDescuento: number,
+    observacion: string
 }
 const schema: JSONSchemaType<Detail> = {
     type: "object",
@@ -28,7 +30,9 @@ const schema: JSONSchemaType<Detail> = {
         igv: { type: "number" },
         tipAfeIgv: { type: "number" },
         totalImpuestos: { type: "number" },
-        mtoPrecioUnitario: { type: "number" }
+        mtoPrecioUnitario: { type: "number" },
+        mtoDescuento: { type: "number" },
+        observacion: { type: "string" }
     },
     required: ["codProducto", "unidad", "descripcion",
         "cantidad", "mtoValorUnitario", "mtoValorVenta", "mtoBaseIgv",

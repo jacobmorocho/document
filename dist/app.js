@@ -12,6 +12,8 @@ const routePdf_1 = require("./routes/routePdf");
 const express_list_endpoints_1 = __importDefault(require("express-list-endpoints"));
 const db_1 = require("./db");
 const body_parser_1 = __importDefault(require("body-parser"));
+const routeBilling_1 = require("./routes/routeBilling");
+const routeXml_1 = require("./routes/routeXml");
 (0, db_1.connectToDatabase)();
 const app = (0, express_1.default)();
 const port = process.env.PORT;
@@ -21,6 +23,8 @@ app.use(body_parser_1.default.urlencoded({ extended: true }));
 app.use('/api/document', routeDocument_1.routeDocument);
 app.use('/api/aws', routeAws_1.routeraws);
 app.use('/api/pdf', routePdf_1.routerpdf);
+app.use('/api/billing', routeBilling_1.routebilling);
+app.use('/api/xml', routeXml_1.routeXml);
 app.listen(port, err => {
     if (err) {
         return console.error(err);

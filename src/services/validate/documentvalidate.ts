@@ -4,8 +4,9 @@ import * as Company from '../../models/Company';
 import * as Adress from '../../models/Address';
 import * as Legend from '../../models/Legend';
 import * as Detail from '../../models/Detail';
+import * as Client from '../../models/Client';
 import Ajv from "ajv"
-const ajv = new Ajv({allErrors: true})
+const ajv = new Ajv({ allErrors: true })
 
 const documentvalidate = (schema) => {
     let errors = [] as any;
@@ -20,7 +21,7 @@ const documentvalidate = (schema) => {
         errors.push({ "entity": "Company.Adress", errors: ajv.errors })
     }
     /*client*/
-    if (!ajv.validate(Company.schema, schema.client)) {
+    if (!ajv.validate(Client.schema, schema.client)) {
         errors.push({ "entity": "client", errors: ajv.errors })
     }
     if (!ajv.validate(Adress.schema, schema.client.address)) {

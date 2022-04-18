@@ -16,7 +16,14 @@ const documentController = () => {
     };
     const Add = async (req, res) => {
         try {
-            (0, save_1.Save)(req.body).then(response => res.json({ status: true, message: "successfully" })).catch(error => res.json(error));
+            (0, save_1.SaveDocument)(req.body).then(response => {
+                if (!response && !response._id) {
+                    res.json({ status: false, response });
+                }
+                else {
+                    res.json({ status: true, message: "successfully" });
+                }
+            }).catch(error => res.json(error));
         }
         catch (error) {
             res.json({ status: false, message: error });
@@ -25,7 +32,7 @@ const documentController = () => {
     const Serach = async (req, res) => {
         try {
             console.log(req.body);
-            res.json(await (0, search_1.Search)().All(req.body));
+            res.json(await (0, search_1.SearchDocument)().All(req.body));
         }
         catch (error) {
             res.json(error);
@@ -43,7 +50,7 @@ const documentController = () => {
         console.log(req.params);
         const { id: _id } = req.params;
         const paylod = req.body;
-        (0, update_1.Update)({ _id, paylod }, (err, updatedDocument) => {
+        (0, update_1.DocumentUpdate)().Update({ _id, paylod }, (err, updatedDocument) => {
             if (err) {
                 res.json({ success: false, msg: err });
             }

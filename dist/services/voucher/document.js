@@ -3,112 +3,125 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createInvoice = void 0;
+exports.createdocument = void 0;
 const fs_1 = __importDefault(require("fs"));
-const pdfkit_1 = __importDefault(require("pdfkit"));
-const createInvoice = async (invoice, path, callcack) => {
-    let doc = new pdfkit_1.default({ size: "A4", margin: 50 });
-    generateHeader(doc);
-    generateCustomerInformation(doc, invoice);
-    generateInvoiceTable(doc, invoice);
-    generateFooter(doc);
-    doc.end();
-    doc.pipe(fs_1.default.createWriteStream(path));
-    callcack();
+const pdfmake_1 = __importDefault(require("pdfmake"));
+const search_1 = require("../../services/mongo/search");
+const moment_1 = __importDefault(require("moment"));
+const util_1 = require("../../services/sunat/util");
+const createdocument = async (id, path, callback) => {
+    let doc = await (0, search_1.SearchDocument)().ById(id);
+    let content = [];
+    content.push({
+        columns: [
+            { width: 100, image: await (0, util_1.getBase64ImageFromURL)("https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Kia-logo.png/120px-Kia-logo.png") },
+            { width: 300, text: "", style: 'paragraph' },
+            {
+                table: {
+                    body: [
+                        [{ text: doc.company.ruc, style: 'header', alignment: 'center' }],
+                        [{ text: (0, util_1.TypeDocuments)(doc.tipoDoc), style: 'header', alignment: 'center' }],
+                        [{ text: (0, moment_1.default)(doc.fechaEmision).format('DD-MM-YYYY'), alignment: 'center' }]
+                    ]
+                }
+            }
+        ]
+    });
+    content.push({ text: doc.company.razonSocial, style: 'header' });
+    content.push({ text: doc.company.address.direccion, style: 'paragraph' });
+    content.push({ text: `${doc.company.address.departamento}-${doc.company.address.provincia}-${doc.company.address.distrito}`, style: 'paragraph' });
+    content.push({ text: "\n" });
+    content.push({ text: "Datos del Documento:", style: 'header' });
+    content.push({ canvas: [{ type: 'line', x1: 0, y1: 5, x2: 520, y2: 5, lineWidth: 1 }] });
+    content.push({ text: "\n" });
+    content.push({ columns: [{ width: 100, text: 'Razón social :', style: 'paragraph' }, { width: 520, text: doc.client.rznSocial, style: 'paragraph' }] });
+    content.push({ columns: [{ width: 100, text: 'Dirección :', style: 'paragraph' }, { width: 520, text: doc.client.address.direccion, style: 'paragraph' }] });
+    content.push({ columns: [{ width: 100, text: 'Ubicación :', style: 'paragraph' }, { width: 520, text: doc.client.address.departamento, style: 'paragraph' }] });
+    content.push({ columns: [{ width: 100, text: 'RUC/DNI :', style: 'paragraph' }, { width: 520, text: doc.client.numDoc, style: 'paragraph' }] });
+    content.push({ columns: [{ width: 100, text: 'Fecha de Emisión :', style: 'paragraph' }, { width: 520, text: (0, moment_1.default)(doc.fechaEmision).format('DD-MM-YYYY'), style: 'paragraph' }] });
+    content.push({ columns: [{ width: 100, text: 'Información de pago:', style: 'paragraph' }, { width: 520, text: doc.formaPago.tipo, style: 'paragraph' }] });
+    content.push({ columns: [{ width: 100, text: 'Fecha de pago:', style: 'paragraph' }, { width: 520, text: (0, moment_1.default)(doc.fechaEmision).format('DD-MM-YYYY'), style: 'paragraph' }] });
+    content.push({ columns: [{ width: 100, text: 'Monto neto pagado :', style: 'paragraph' }, { width: 520, text: (0, util_1.Currency)(doc.tipoMoneda, doc.valorVenta), style: 'paragraph' }] });
+    content.push({ text: "\n" });
+    content.push({ columns: [{ width: 80, text: 'Código', style: 'ItemHeader' }, { width: 350, text: 'Descripción', style: 'ItemHeader' }, { width: 50, text: 'V. Venta', style: 'ItemHeader', alignment: 'right' }] });
+    doc.details.map(({ codProducto, unidad, descripcion, cantidad, mtoValorVenta, mtoValorUnitario, mtoDescuento = 0 }) => {
+        content.push({ canvas: [{ type: 'line', x1: 0, y1: 5, x2: 520, y2: 5, lineWidth: 1 }] });
+        content.push({ columns: [{ width: 80, text: codProducto, style: 'ItemTex' }, { width: 350, text: descripcion, style: 'ItemTex' }, { width: 50, text: (0, util_1.Currency)(doc.tipoMoneda, mtoValorVenta), style: 'ItemTex', alignment: 'right' }] });
+        content.push({ text: `Un.Med.: ${unidad} |Cant.: ${cantidad}| P. Lista: ${(0, util_1.Currency)(doc.tipoMoneda, mtoValorVenta)} |Dscto.:${(0, util_1.Currency)(doc.tipoMoneda, mtoDescuento)}| V. Unit.: ${(0, util_1.Currency)(doc.tipoMoneda, mtoValorUnitario)}`, style: 'ItemTexBold' });
+    });
+    content.push({ canvas: [{ type: 'line', x1: 0, y1: 5, x2: 520, y2: 5, lineWidth: 1 }] });
+    content.push({ text: "\n" });
+    content.push({ columns: [{ width: 80, text: '', style: 'ItemHeader' }, { width: 350, text: 'Valor venta', style: 'ItemHeader' }, { width: 50, text: (0, util_1.Currency)(doc.tipoMoneda, doc.valorVenta), style: 'ItemHeader', alignment: 'right' }] });
+    content.push({ columns: [{ width: 80, text: '', style: 'ItemHeader' }, { width: 350, text: 'IGV 18.00%', style: 'ItemHeader' }, { width: 50, text: (0, util_1.Currency)(doc.tipoMoneda, doc.mtoIGV), style: 'ItemHeader', alignment: 'right' }] });
+    content.push({ canvas: [{ type: 'line', x1: 0, y1: 5, x2: 520, y2: 5, lineWidth: 1 }] });
+    content.push({ text: "\n" });
+    content.push({ columns: [{ width: 80, text: '', style: 'ItemHeader' }, { width: 350, text: 'Precio total ', style: 'ItemHeader' }, { width: 50, text: (0, util_1.Currency)(doc.tipoMoneda, doc.mtoImpVenta), style: 'ItemHeader', alignment: 'right' }] });
+    content.push({ canvas: [{ type: 'line', x1: 0, y1: 5, x2: 520, y2: 5, lineWidth: 1 }] });
+    content.push({ text: "\n" });
+    content.push({ text: 'Importe en letras', style: 'ItemHeader' });
+    content.push({ text: "\n" });
+    content.push({ text: (0, util_1.numeroALetras)().NumeroALetras(doc.mtoImpVenta / 3, doc.tipoMoneda), style: 'ItemHeader' });
+    content.push({ text: 'Observaciones', style: 'ItemTexBold' });
+    content.push({ text: doc.observacion });
+    content.push({ canvas: [{ type: 'line', x1: 0, y1: 5, x2: 520, y2: 5, lineWidth: 1 }] });
+    content.push({ text: "\n" });
+    content.push({ qr: `${doc.company.ruc}|${doc.tipoDoc}|${doc.serie}|${doc.correlativo}|${doc.mtoIGV}|${doc.valorVenta}|${(0, moment_1.default)(doc.fechaEmision).format('DD-MM-YYYY')}|${doc.client.tipoDoc}|${doc.client.numDoc}|`, fit: 75, alignment: 'center' });
+    content.push({ text: "\n" });
+    content.push({ canvas: [{ type: 'line', x1: 0, y1: 5, x2: 520, y2: 5, lineWidth: 1 }] });
+    content.push({ text: 'Representación impresa de la factura electrónica Autorizado mediante la Resolución de intendencia N°0340050007689 /SUNAT', style: 'subheader', alignment: 'center' });
+    var printer = new pdfmake_1.default(util_1.fonts);
+    var docDefinition = {
+        pageSize: {
+            width: 595.28,
+            height: 'auto'
+        },
+        content: content,
+        styles: {
+            header: {
+                fontSize: 12,
+                bold: true,
+                margin: [0, 0, 0, 1]
+            },
+            subheader: {
+                fontSize: 9,
+                bold: true,
+                margin: [0, 1, 0, 1]
+            },
+            paragraph: {
+                fontSize: 8,
+                color: 'black'
+            },
+            ItemHeader: {
+                fontSize: 8,
+                bold: true,
+                color: 'black'
+            },
+            ItemTex: {
+                fontSize: 6,
+                bold: false,
+                color: 'black',
+                margin: [0, 5, 0, 0],
+            },
+            ItemTexBold: {
+                fontSize: 7,
+                bold: true,
+                color: 'black',
+                margin: [0, 5, 0, 0],
+            }
+        },
+        patterns: {
+            stripe45d: {
+                boundingBox: [0, 0, 0, 0],
+                xStep: 0,
+                yStep: 0,
+                pattern: '1 w 0 1 m 4 5 l s 2 0 m 5 3 l s'
+            }
+        }
+    };
+    var pdfDoc = printer.createPdfKitDocument(docDefinition);
+    pdfDoc.pipe(fs_1.default.createWriteStream(path));
+    pdfDoc.end();
+    callback(doc.numDoc);
 };
-exports.createInvoice = createInvoice;
-const generateHeader = (doc) => {
-    doc
-        .image("logo.png", 50, 45, { width: 50 })
-        .fillColor("#444444")
-        .fontSize(20)
-        .text("ACME Inc.", 110, 57)
-        .fontSize(10)
-        .text("ACME Inc.", 200, 50, { align: "right" })
-        .text("123 Main Street", 200, 65, { align: "right" })
-        .text("New York, NY, 10025", 200, 80, { align: "right" })
-        .moveDown();
-};
-const generateCustomerInformation = (doc, invoice) => {
-    doc
-        .fillColor("#444444")
-        .fontSize(20)
-        .text("Invoice", 50, 160);
-    generateHr(doc, 185);
-    const customerInformationTop = 200;
-    doc
-        .fontSize(10)
-        .text("Invoice Number:", 50, customerInformationTop)
-        .font("Helvetica-Bold")
-        .text(invoice.invoice_nr, 150, customerInformationTop)
-        .font("Helvetica")
-        .text("Invoice Date:", 50, customerInformationTop + 15)
-        .text(formatDate(new Date()), 150, customerInformationTop + 15)
-        .text("Balance Due:", 50, customerInformationTop + 30)
-        .text(formatCurrency(invoice.subtotal - invoice.paid), 150, customerInformationTop + 30)
-        .font("Helvetica-Bold")
-        .text(invoice.shipping.name, 300, customerInformationTop)
-        .font("Helvetica")
-        .text(invoice.shipping.address, 300, customerInformationTop + 15)
-        .text(invoice.shipping.city +
-        ", " +
-        invoice.shipping.state +
-        ", " +
-        invoice.shipping.country, 300, customerInformationTop + 30)
-        .moveDown();
-    generateHr(doc, 252);
-};
-const generateInvoiceTable = (doc, invoice) => {
-    let i;
-    const invoiceTableTop = 330;
-    doc.font("Helvetica-Bold");
-    generateTableRow(doc, invoiceTableTop, "Item", "Description", "Unit Cost", "Quantity", "Line Total");
-    generateHr(doc, invoiceTableTop + 20);
-    doc.font("Helvetica");
-    for (i = 0; i < invoice.items.length; i++) {
-        const item = invoice.items[i];
-        const position = invoiceTableTop + (i + 1) * 30;
-        generateTableRow(doc, position, item.item, item.description, formatCurrency(item.amount / item.quantity), item.quantity, formatCurrency(item.amount));
-        generateHr(doc, position + 20);
-    }
-    const subtotalPosition = invoiceTableTop + (i + 1) * 30;
-    generateTableRow(doc, subtotalPosition, "", "", "Subtotal", "", formatCurrency(invoice.subtotal));
-    const paidToDatePosition = subtotalPosition + 20;
-    generateTableRow(doc, paidToDatePosition, "", "", "Paid To Date", "", formatCurrency(invoice.paid));
-    const duePosition = paidToDatePosition + 25;
-    doc.font("Helvetica-Bold");
-    generateTableRow(doc, duePosition, "", "", "Balance Due", "", formatCurrency(invoice.subtotal - invoice.paid));
-    doc.font("Helvetica");
-};
-const generateFooter = (doc) => {
-    doc
-        .fontSize(10)
-        .text("Payment is due within 15 days. Thank you for your business.", 50, 780, { align: "center", width: 500 });
-};
-const generateTableRow = (doc, y, item, description, unitCost, quantity, lineTotal) => {
-    doc
-        .fontSize(10)
-        .text(item, 50, y)
-        .text(description, 150, y)
-        .text(unitCost, 280, y, { width: 90, align: "right" })
-        .text(quantity, 370, y, { width: 90, align: "right" })
-        .text(lineTotal, 0, y, { align: "right" });
-};
-const generateHr = (doc, y) => {
-    doc
-        .strokeColor("#aaaaaa")
-        .lineWidth(1)
-        .moveTo(50, y)
-        .lineTo(550, y)
-        .stroke();
-};
-const formatCurrency = (cents) => {
-    return "$" + (cents / 100).toFixed(2);
-};
-const formatDate = (date) => {
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return year + "/" + month + "/" + day;
-};
+exports.createdocument = createdocument;
 //# sourceMappingURL=document.js.map

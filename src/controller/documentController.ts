@@ -1,8 +1,8 @@
-import { Save } from "../services/mongo/save";
+import { SaveDocument } from "../services/mongo/save";
 import { ListDocuents } from "../services/mongo/list";
-import { Search } from "../services/mongo/search";
+import { SearchDocument } from "../services/mongo/search";
 import { Delete } from "../services/mongo/delete";
-import { Update } from "../services/mongo/update";
+import { DocumentUpdate } from "../services/mongo/update";
 
 const documentController = () => {
     const List = async (req, res) => {
@@ -14,7 +14,13 @@ const documentController = () => {
     }
     const Add = async (req, res) => {
         try {
-            Save(req.body).then(response => res.json({ status: true, message: "successfully" })).catch(error => res.json(error));
+            SaveDocument(req.body).then(response => {
+                if (!response && !response._id) {
+                    res.json({ status: false, response })
+                } else {
+                    res.json({ status: true, message: "successfully" })
+                }
+            }).catch(error => res.json(error));
         } catch (error) {
             res.json({ status: false, message: error });
         }
@@ -22,7 +28,7 @@ const documentController = () => {
     const Serach = async (req, res) => {
         try {
             console.log(req.body);
-            res.json(await Search().All(req.body));
+            res.json(await SearchDocument().All(req.body));
         } catch (error) {
             res.json(error);
         }
@@ -38,7 +44,7 @@ const documentController = () => {
         console.log(req.params);
         const { id: _id } = req.params;
         const paylod = req.body;
-        Update({ _id, paylod }, (err, updatedDocument) => {
+        DocumentUpdate().Update({ _id, paylod }, (err, updatedDocument) => {
             if (err) {
                 res.json({ success: false, msg: err });
             } else {

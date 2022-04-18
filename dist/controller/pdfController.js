@@ -7,43 +7,17 @@ exports.pdfController = void 0;
 const document_1 = require("../services/voucher/document");
 const fs_1 = __importDefault(require("fs"));
 const tmp_1 = __importDefault(require("tmp"));
+const ticket_1 = require("../services/voucher/ticket");
 const pdfController = () => {
-    const Dowload = (req, res) => {
-        const invoice = {
-            shipping: {
-                name: "John Doe",
-                address: "1234 Main Street",
-                city: "San Francisco",
-                state: "CA",
-                country: "US",
-                postal_code: 94111
-            },
-            items: [
-                {
-                    item: "TC 100",
-                    description: "Toner Cartridge",
-                    quantity: 2,
-                    amount: 6000
-                },
-                {
-                    item: "USB_EXT",
-                    description: "USB Cable Extender",
-                    quantity: 1,
-                    amount: 2000
-                }
-            ],
-            subtotal: 8000,
-            paid: 0,
-            invoice_nr: 1234
-        };
+    const Voucher = (req, res) => {
         try {
+            const { id: _id } = req.params;
             tmp_1.default.file(function (err, path, fd, cleanupCallback) {
                 if (err)
                     throw err;
-                console.log("path", path);
-                (0, document_1.createInvoice)(invoice, path, () => {
+                (0, document_1.createdocument)(_id, path, (numDoc) => {
                     const rs = fs_1.default.createReadStream(path);
-                    res.setHeader("Content-Disposition", "attachment; invoice.pdf");
+                    res.setHeader("Content-Disposition", `attachment; ${numDoc}.pdf`);
                     rs.pipe(res);
                     fs_1.default.unlink(path, function (err) {
                         if (err)
@@ -57,8 +31,25 @@ const pdfController = () => {
             console.log(err);
         }
     };
+    const Ticket = (req, res) => {
+        tmp_1.default.file(function (err, path, fd, cleanupCallback) {
+            if (err)
+                throw err;
+            (0, ticket_1.createTicket)(req.params.id, path, (numDoc) => {
+                const rs = fs_1.default.createReadStream(path);
+                res.setHeader("Content-Disposition", `attachment; ${numDoc}.pdf`);
+                rs.pipe(res);
+                fs_1.default.unlink(path, function (err) {
+                    if (err)
+                        throw err;
+                    console.log('File deleted!');
+                });
+            });
+        });
+    };
     return {
-        dowload: Dowload
+        voucher: Voucher,
+        ticket: Ticket
     };
 };
 exports.pdfController = pdfController;
