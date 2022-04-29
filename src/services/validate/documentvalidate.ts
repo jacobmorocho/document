@@ -41,4 +41,16 @@ const documentvalidate = (schema) => {
     });
     return { status: errors.length <= 0, errors };
 }
-export { documentvalidate }
+const companyvalidate=(schema)=>{
+    console.log(schema);
+    let errors = [] as any;
+    /*company*/
+    if (!ajv.validate(Company.schema, schema)) {
+        errors.push({ "entity": "Company", errors: ajv.errors })
+    }
+    if (!ajv.validate(Adress.schema, schema.address)) {
+        errors.push({ "entity": "Company.Adress", errors: ajv.errors })
+    }
+    return { status: errors.length <= 0, errors };
+}
+export { documentvalidate,companyvalidate }

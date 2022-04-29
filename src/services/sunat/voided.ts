@@ -1,16 +1,16 @@
 import { DocumentUpdate, VoidedUpdate } from "../../services/mongo/update";
 import { Billing } from "../../middlewares/billing";
 import { SaveVoided } from "../../services/mongo/save";
-import { DocumentToVoided, DocumetToVoided } from "./mapping"
+import { DocumentToVoided, DocumentToVoidedNew } from "./mapping"
 import { SearchDocument, SearchVoided } from "../../services/mongo/search";
 
 const Voided = () => {
     const Create = async ({ id, desMotivoBaja }) => {
-        let note = await SearchVoided().ByParent(id);
-        if (note && note._id) {
-            return note;
+        let voided = await SearchVoided().ByParent(id);
+        if (voided && voided._id) {
+            return voided;
         } else {
-            let doc = await DocumetToVoided(id, desMotivoBaja);
+            let doc = await DocumentToVoidedNew(id, desMotivoBaja);
             return await SaveVoided(doc);
         }
     }

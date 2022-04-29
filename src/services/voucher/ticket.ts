@@ -113,6 +113,6 @@ const createTicket = async (id, path, callback) => {
     var pdfDoc = printer.createPdfKitDocument(docDefinition);
     pdfDoc.pipe(fs.createWriteStream(path));
     pdfDoc.end();
-    callback();
+    callback(doc.numDoc);
 }
 export { createTicket }

@@ -13,7 +13,7 @@ const Invoice = () => {
                 let document = await SearchDocument().ById(id);
                 document.estado = "ENVIADO"              
                 DocumentUpdate().Update({ _id: id, paylod: document }, (response) => {
-                    return response;
+                    console.log(response)
                 })
             } 
             return data.sunatResponse;

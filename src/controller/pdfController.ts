@@ -38,9 +38,24 @@ const pdfController = () => {
             })
         });
     }
+    const TicketUpload = (req, res) => {
+        tmp.file(function (err, path, fd, cleanupCallback) {
+            if (err) throw err;
+            createTicket(req.params.id, path, (numDoc) => {
+                const rs = fs.createReadStream(path);
+                res.setHeader("Content-Disposition", `attachment; ${numDoc}.pdf`);
+                rs.pipe(res);
+                fs.unlink(path, function (err) {
+                    if (err) throw err;
+                    console.log('File deleted!');
+                });
+            })
+        });
+    }
     return {
         voucher: Voucher,
-        ticket: Ticket
+        ticket: Ticket,
+        TicketUpload
     }
 }
 export { pdfController }

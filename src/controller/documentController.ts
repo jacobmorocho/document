@@ -3,6 +3,7 @@ import { ListDocuents } from "../services/mongo/list";
 import { SearchDocument } from "../services/mongo/search";
 import { Delete } from "../services/mongo/delete";
 import { DocumentUpdate } from "../services/mongo/update";
+import { TicketUpload } from "../services/aws";
 
 const documentController = () => {
     const List = async (req, res) => {
@@ -14,20 +15,15 @@ const documentController = () => {
     }
     const Add = async (req, res) => {
         try {
-            SaveDocument(req.body).then(response => {
-                if (!response && !response._id) {
-                    res.json({ status: false, response })
-                } else {
-                    res.json({ status: true, message: "successfully" })
-                }
-            }).catch(error => res.json(error));
+            let response = await SaveDocument(req.body);
+            let aws = await TicketUpload(response.data.id);
+            res.json(response);
         } catch (error) {
             res.json({ status: false, message: error });
         }
     }
     const Serach = async (req, res) => {
         try {
-            console.log(req.body);
             res.json(await SearchDocument().All(req.body));
         } catch (error) {
             res.json(error);
@@ -41,7 +37,6 @@ const documentController = () => {
         }
     }
     const Updated = (req, res) => {
-        console.log(req.params);
         const { id: _id } = req.params;
         const paylod = req.body;
         DocumentUpdate().Update({ _id, paylod }, (err, updatedDocument) => {

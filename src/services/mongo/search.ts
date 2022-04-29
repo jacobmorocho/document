@@ -16,6 +16,7 @@ const SearchDocument = () => {
     }
     const All = async (body) => {
 
+        console.log("body", body)
         let query = {};
         if (body._id) {
             query['_id'] = body._id;
@@ -26,7 +27,7 @@ const SearchDocument = () => {
         }
 
         if (body.tipoDoc) {
-            query['tipoDoc'] = body.tipoDoc;
+            query['tipoDoc'] = { $in: body.tipoDoc.split(',') }
         }
         if (body.serie) {
             query['serie'] = body.serie;
@@ -34,12 +35,12 @@ const SearchDocument = () => {
         if (body.tipoMoneda) {
             query['tipoMoneda'] = body.tipoMoneda;
         }
-        if (body.idDocument) {
-            query['idDocument'] = body.idDocument;
+        if (body.numDoc) {
+            query['numDoc'] = body.numDoc;
         }
         if (body.client) {
-            if (body.client.ruc) {
-                query['client.ruc'] = body.client.ruc;
+            if (body.client.numDoc) {
+                query['client.numDoc'] = body.client.numDoc;
             }
             if (body.client.razonSocial) {
                 query['client.razonSocial'] = body.client.razonSocial;
@@ -66,10 +67,11 @@ const SearchDocument = () => {
                 '$lte': new Date(new Date(body.maxfechaEmision).setHours(23, 59, 59))
             }
         }
+        console.log('query', query);
         const documents = await DocumentModel.find(query).sort({ correlativo: -1 }).limit(50).lean();
         return documents;
     }
-    const ById = async (id:any) => {
+    const ById = async (id: any) => {
         return await DocumentModel.findById(id);
     }
     const NoteByParent = async (parentId) => {
@@ -100,7 +102,12 @@ const SearchVoided = () => {
         }
         return 1;
     }
+    const All = async (body) => {
 
+        let query = {};
+        const documents = await VoidedModel.find(query).sort({ correlativo: -1 }).limit(50).lean();
+        return documents;
+    }
     const ById = async (id) => {
         return await VoidedModel.findById(id);
     }
@@ -116,7 +123,8 @@ const SearchVoided = () => {
     return {
         Correlative: Correlative,
         ById: ById,
-        ByParent
+        ByParent,
+        All
     }
 }
 

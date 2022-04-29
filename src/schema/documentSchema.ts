@@ -12,7 +12,7 @@ const DocumentSchema = new Schema({
         unique: true
     },
     correlativo: Number,
-    fechaEmision: String,
+    fechaEmision: Date,
     tipoMoneda: String,
     mtoOperGravadas: Number,
     mtoIGV: Number,

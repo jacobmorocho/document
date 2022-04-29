@@ -85,7 +85,10 @@ const DocumentToNote = async (id: any): Promise<Inote> => {
     }
     return document;
 }
-const DocumetToVoided = async (id: any, desMotivoBaja): Promise<any> => {
+
+
+
+const DocumentToVoidedNew = async (id: any, desMotivoBaja): Promise<any> => {
     let doc = await SearchDocument().ById(id);
     let document: IVoided = {
         correlativo: (await SearchVoided().Correlative(doc)).toString(),
@@ -115,4 +118,4 @@ const DocumentToVoided = async (id) => {
     }
     return document;
 }
-export { DocumentToInvoice, InvoiceToNote, DocumentToNote, DocumetToVoided, DocumentToVoided }
+export { DocumentToInvoice, InvoiceToNote, DocumentToNote, DocumentToVoidedNew, DocumentToVoided }
