@@ -15,7 +15,7 @@ const Invoice = () => {
                 let document = await (0, search_1.SearchDocument)().ById(id);
                 document.estado = "ENVIADO";
                 (0, update_1.DocumentUpdate)().Update({ _id: id, paylod: document }, (response) => {
-                    return response;
+                    console.log(response);
                 });
             }
             return data.sunatResponse;

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DocumentToVoided = exports.DocumetToVoided = exports.DocumentToNote = exports.InvoiceToNote = exports.DocumentToInvoice = void 0;
+exports.DocumentToVoided = exports.DocumentToVoidedNew = exports.DocumentToNote = exports.InvoiceToNote = exports.DocumentToInvoice = void 0;
 const search_1 = require("../../services/mongo/search");
 const moment_1 = __importDefault(require("moment"));
 const DocumentToInvoice = async (id) => {
@@ -89,7 +89,7 @@ const DocumentToNote = async (id) => {
     return document;
 };
 exports.DocumentToNote = DocumentToNote;
-const DocumetToVoided = async (id, desMotivoBaja) => {
+const DocumentToVoidedNew = async (id, desMotivoBaja) => {
     let doc = await (0, search_1.SearchDocument)().ById(id);
     let document = {
         correlativo: (await (0, search_1.SearchVoided)().Correlative(doc)).toString(),
@@ -107,7 +107,7 @@ const DocumetToVoided = async (id, desMotivoBaja) => {
     };
     return { document, doc };
 };
-exports.DocumetToVoided = DocumetToVoided;
+exports.DocumentToVoidedNew = DocumentToVoidedNew;
 const DocumentToVoided = async (id) => {
     let doc = await (0, search_1.SearchVoided)().ById(id);
     let document = {

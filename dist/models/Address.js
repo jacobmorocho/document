@@ -9,11 +9,36 @@ const ajv = new ajv_1.default();
 const schema = {
     type: "object",
     properties: {
-        direccion: { type: "string" },
-        provincia: { type: "string" },
-        departamento: { type: "string" },
-        distrito: { type: "string" },
-        ubigueo: { type: "string" },
+        direccion: {
+            type: "string", allOf: [
+                { "minLength": 3 },
+                { "maxLength": 1000 }
+            ]
+        },
+        provincia: {
+            type: "string", allOf: [
+                { "minLength": 3 },
+                { "maxLength": 1000 }
+            ]
+        },
+        departamento: {
+            type: "string", allOf: [
+                { "minLength": 3 },
+                { "maxLength": 1000 }
+            ]
+        },
+        distrito: {
+            type: "string", allOf: [
+                { "minLength": 3 },
+                { "maxLength": 1000 }
+            ]
+        },
+        ubigueo: {
+            type: "string", allOf: [
+                { "minLength": 3 },
+                { "maxLength": 20 }
+            ]
+        },
     },
     required: ["direccion", "provincia", "departamento", "distrito", "ubigueo"],
 };

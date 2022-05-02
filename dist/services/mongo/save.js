@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SaveVoided = exports.SaveDocument = void 0;
+exports.SaveCompany = exports.SaveVoided = exports.SaveDocument = void 0;
 const voidedSchema_1 = require("../../schema/voidedSchema");
 const documentSchema_1 = require("../../schema/documentSchema");
 const documentvalidate_1 = require("../../services/validate/documentvalidate");
 const search_1 = require("./search");
+const companySchema_1 = require("../../schema/companySchema");
 const SaveDocument = async (body) => {
     let response = (0, documentvalidate_1.documentvalidate)(body);
     if (!response.status) {
@@ -16,7 +17,8 @@ const SaveDocument = async (body) => {
         document.numDoc = `${document.serie}-${document.correlativo}`;
         document.idDocument = `${document.company.ruc}-${document.serie}-${document.correlativo}`;
         document.estado = "REGISTRO";
-        return await document.save();
+        let data = await document.save();
+        return { status: true, data };
     }
 };
 exports.SaveDocument = SaveDocument;
@@ -27,7 +29,19 @@ const SaveVoided = async (body) => {
     document.idDocument = `${document.company.ruc}-${body.document.serie}-${document.correlativo}`;
     document.sunatResponse.success = false;
     document.sunatResponse.ticket = "";
+    document.parent = body.doc;
     return await document.save();
 };
 exports.SaveVoided = SaveVoided;
+const SaveCompany = async (body) => {
+    let response = (0, documentvalidate_1.companyvalidate)(body);
+    if (!response.status) {
+        return response;
+    }
+    else {
+        var campany = new companySchema_1.CompanyModel(body);
+        return await campany.save();
+    }
+};
+exports.SaveCompany = SaveCompany;
 //# sourceMappingURL=save.js.map

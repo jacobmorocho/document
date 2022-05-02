@@ -11,41 +11,30 @@ console.log(s3)
 const TicketUpload = (id) => {
     tmp.file(function (err, path, fd, cleanupCallback) {
         if (err) throw err;
-        createTicket(id, path, (numDoc) => {
-            const rs = fs.createReadStream(path);
-            Upload({ Bucket: "aws-samishop-tienda", Key: `punto-venta-3196/ticket/demo${numDoc}.pdf`, file: rs })
+        createTicket(id, path, (doc,numDoc) => {
+            Upload({ Bucket: "aws-samishop-tienda", Key: `punto-venta-3196/ticket/demo-${numDoc}.pdf`, file: doc })
                 .then(res => {
                     console.log("upload", res)
                 }).catch(err => {
-                    fs.unlink(path, function (err) {
+                    /*fs.unlink(path, function (err) {
                         if (err) throw err;
                         console.log('File deleted!');
-                    });
+                    });*/
                 })
         })
     });
 }
-const pathKey = (args) => {
-    let key = args.join("/")
-    const search = '//'
-    const replacer = new RegExp(search, 'g')
-    key = key.replace(replacer, '/');
-    return key;
-}
 const Upload = async ({ Bucket, Key, file }) => {
-    let patchkey = pathKey([Bucket, Key]);
+    console.log(file);
     const params = {
         Bucket: Bucket,
-        Key: patchkey,
-        Body: JSON.stringify(file, null, 2)
+        Key: Key,
+        Body: file,
+        contentType: 'application/pdf'
     };
-    s3.upload(params, (err, data) => {
-        if (err) {
-            console.log(err)
-        }
-        if (data) {
-            console.log(data)
-        }
+    s3.upload(params, function (s3Err, data) {
+        if (s3Err) throw s3Err
+        console.log(`File uploaded successfully at ${data.Location}`)
     });
 }
 export { TicketUpload }

@@ -47,9 +47,26 @@ const pdfController = () => {
             });
         });
     };
+    const TicketUpload = (req, res) => {
+        tmp_1.default.file(function (err, path, fd, cleanupCallback) {
+            if (err)
+                throw err;
+            (0, ticket_1.createTicket)(req.params.id, path, (numDoc) => {
+                const rs = fs_1.default.createReadStream(path);
+                res.setHeader("Content-Disposition", `attachment; ${numDoc}.pdf`);
+                rs.pipe(res);
+                fs_1.default.unlink(path, function (err) {
+                    if (err)
+                        throw err;
+                    console.log('File deleted!');
+                });
+            });
+        });
+    };
     return {
         voucher: Voucher,
-        ticket: Ticket
+        ticket: Ticket,
+        TicketUpload
     };
 };
 exports.pdfController = pdfController;

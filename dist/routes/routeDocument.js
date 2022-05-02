@@ -10,7 +10,7 @@ const routeDocument = express_1.default.Router();
 exports.routeDocument = routeDocument;
 routeDocument.get('/list', (0, documentController_1.documentController)().list);
 routeDocument.post("/add", (0, documentController_1.documentController)().add);
-routeDocument.get("/serach", (0, documentController_1.documentController)().serach);
+routeDocument.post("/serach", (0, documentController_1.documentController)().serach);
 routeDocument.delete("/delete", (0, documentController_1.documentController)().delete);
 routeDocument.put("/update/:id", (0, documentController_1.documentController)().update);
 //# sourceMappingURL=routeDocument.js.map

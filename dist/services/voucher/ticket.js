@@ -116,7 +116,7 @@ const createTicket = async (id, path, callback) => {
     var pdfDoc = printer.createPdfKitDocument(docDefinition);
     pdfDoc.pipe(fs_1.default.createWriteStream(path));
     pdfDoc.end();
-    callback();
+    callback(pdfDoc, doc.numDoc);
 };
 exports.createTicket = createTicket;
 //# sourceMappingURL=ticket.js.map

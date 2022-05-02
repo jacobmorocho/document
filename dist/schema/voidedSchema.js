@@ -11,6 +11,7 @@ const VoidedSchema = new Schema({
         type: String,
         unique: true
     },
+    parent: {},
     serie: String,
     correlativo: Number,
     fecGeneracion: String,

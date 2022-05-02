@@ -12,21 +12,22 @@ const util_1 = require("../../services/sunat/util");
 const createdocument = async (id, path, callback) => {
     let doc = await (0, search_1.SearchDocument)().ById(id);
     let content = [];
-    content.push({
+    /*content.push({
         columns: [
-            { width: 100, image: await (0, util_1.getBase64ImageFromURL)("https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Kia-logo.png/120px-Kia-logo.png") },
+            { width: 100, image: await getBase64ImageFromURL("https://storage.googleapis.com/sspe-blnc-rscs/000005B6/PNG/IMG_LOGO_SAMISHOPEXPRESS_BLANCO.png") },
             { width: 300, text: "", style: 'paragraph' },
             {
                 table: {
                     body: [
                         [{ text: doc.company.ruc, style: 'header', alignment: 'center' }],
-                        [{ text: (0, util_1.TypeDocuments)(doc.tipoDoc), style: 'header', alignment: 'center' }],
-                        [{ text: (0, moment_1.default)(doc.fechaEmision).format('DD-MM-YYYY'), alignment: 'center' }]
+                        [{ text: TypeDocuments(doc.tipoDoc), style: 'header', alignment: 'center' }],
+                        [{ text: moment(doc.fechaEmision).format('DD-MM-YYYY'), alignment: 'center' }]
                     ]
                 }
             }
         ]
-    });
+    })
+*/
     content.push({ text: doc.company.razonSocial, style: 'header' });
     content.push({ text: doc.company.address.direccion, style: 'paragraph' });
     content.push({ text: `${doc.company.address.departamento}-${doc.company.address.provincia}-${doc.company.address.distrito}`, style: 'paragraph' });

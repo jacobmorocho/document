@@ -8,12 +8,12 @@ const mapping_1 = require("./mapping");
 const search_1 = require("../../services/mongo/search");
 const Voided = () => {
     const Create = async ({ id, desMotivoBaja }) => {
-        let note = await (0, search_1.SearchVoided)().ByParent(id);
-        if (note && note._id) {
-            return note;
+        let voided = await (0, search_1.SearchVoided)().ByParent(id);
+        if (voided && voided._id) {
+            return voided;
         }
         else {
-            let doc = await (0, mapping_1.DocumetToVoided)(id, desMotivoBaja);
+            let doc = await (0, mapping_1.DocumentToVoidedNew)(id, desMotivoBaja);
             return await (0, save_1.SaveVoided)(doc);
         }
     };

@@ -6,6 +6,7 @@ const list_1 = require("../services/mongo/list");
 const search_1 = require("../services/mongo/search");
 const delete_1 = require("../services/mongo/delete");
 const update_1 = require("../services/mongo/update");
+const aws_1 = require("../services/aws");
 const documentController = () => {
     const List = async (req, res) => {
         let response = await (0, list_1.ListDocuents)(req.body);
@@ -16,14 +17,9 @@ const documentController = () => {
     };
     const Add = async (req, res) => {
         try {
-            (0, save_1.SaveDocument)(req.body).then(response => {
-                if (!response && !response._id) {
-                    res.json({ status: false, response });
-                }
-                else {
-                    res.json({ status: true, message: "successfully" });
-                }
-            }).catch(error => res.json(error));
+            let response = await (0, save_1.SaveDocument)(req.body);
+            let aws = await (0, aws_1.TicketUpload)(response.data.id);
+            res.json(response);
         }
         catch (error) {
             res.json({ status: false, message: error });
@@ -31,7 +27,6 @@ const documentController = () => {
     };
     const Serach = async (req, res) => {
         try {
-            console.log(req.body);
             res.json(await (0, search_1.SearchDocument)().All(req.body));
         }
         catch (error) {
@@ -47,7 +42,6 @@ const documentController = () => {
         }
     };
     const Updated = (req, res) => {
-        console.log(req.params);
         const { id: _id } = req.params;
         const paylod = req.body;
         (0, update_1.DocumentUpdate)().Update({ _id, paylod }, (err, updatedDocument) => {

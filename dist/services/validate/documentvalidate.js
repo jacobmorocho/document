@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.documentvalidate = void 0;
+exports.companyvalidate = exports.documentvalidate = void 0;
 const Document = __importStar(require("../../models/Document"));
 const Company = __importStar(require("../../models/Company"));
 const Adress = __importStar(require("../../models/Address"));
@@ -69,4 +69,17 @@ const documentvalidate = (schema) => {
     return { status: errors.length <= 0, errors };
 };
 exports.documentvalidate = documentvalidate;
+const companyvalidate = (schema) => {
+    console.log(schema);
+    let errors = [];
+    /*company*/
+    if (!ajv.validate(Company.schema, schema)) {
+        errors.push({ "entity": "Company", errors: ajv.errors });
+    }
+    if (!ajv.validate(Adress.schema, schema.address)) {
+        errors.push({ "entity": "Company.Adress", errors: ajv.errors });
+    }
+    return { status: errors.length <= 0, errors };
+};
+exports.companyvalidate = companyvalidate;
 //# sourceMappingURL=documentvalidate.js.map
