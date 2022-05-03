@@ -1,3 +1,4 @@
+import { SearchCompany } from "../services/mongo/search";
 import { SaveCompany } from "../services/mongo/save";
 
 const companyController = () => {
@@ -14,8 +15,19 @@ const companyController = () => {
             res.json({ status: false, message: error });
         }
     }
+    const List = (req, res) => {
+        SearchCompany().all()
+            .then((response) => {
+                res.json(response)
+            })
+            .catch((err) => {
+                res.json(err)
+            })
+
+    }
     return {
-        save: Save
+        save: Save,
+        list: List
     }
 }
 export { companyController }

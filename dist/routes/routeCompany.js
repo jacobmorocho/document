@@ -9,4 +9,5 @@ const companyController_1 = require("../controller/companyController");
 const routerCompany = express_1.default.Router();
 exports.routerCompany = routerCompany;
 routerCompany.post('/save', (0, companyController_1.companyController)().save);
+routerCompany.get('/list', (0, companyController_1.companyController)().list);
 //# sourceMappingURL=routeCompany.js.map

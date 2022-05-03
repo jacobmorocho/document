@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SearchVoided = exports.SearchDocument = void 0;
+exports.SearchCompany = exports.SearchVoided = exports.SearchDocument = void 0;
 const voidedSchema_1 = require("../../schema/voidedSchema");
 const documentSchema_1 = require("../../schema/documentSchema");
+const companySchema_1 = require("../../schema/companySchema");
 const SearchDocument = () => {
     const Correlative = async (doc) => {
         let query = {};
@@ -123,4 +124,14 @@ const SearchVoided = () => {
     };
 };
 exports.SearchVoided = SearchVoided;
+const SearchCompany = () => {
+    const All = async () => {
+        let companys = await companySchema_1.CompanyModel.find().sort({ _id: -1 });
+        return companys;
+    };
+    return {
+        all: All
+    };
+};
+exports.SearchCompany = SearchCompany;
 //# sourceMappingURL=search.js.map

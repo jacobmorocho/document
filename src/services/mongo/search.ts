@@ -1,6 +1,7 @@
 
 import { VoidedModel } from "../../schema/voidedSchema";
 import { DocumentModel } from "../../schema/documentSchema";
+import { CompanyModel } from "../../schema/companySchema";
 
 const SearchDocument = () => {
 
@@ -128,4 +129,13 @@ const SearchVoided = () => {
     }
 }
 
-export { SearchDocument, SearchVoided }
+const SearchCompany = () => {
+    const All = async () => {
+        let companys = await CompanyModel.find().sort({ _id: -1 })
+        return companys;
+    }
+    return {
+        all: All
+    }
+}
+export { SearchDocument, SearchVoided,SearchCompany }
