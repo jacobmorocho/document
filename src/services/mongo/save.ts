@@ -8,6 +8,7 @@ const SaveDocument = async (body): Promise<any> => {
     if (!response.status) {
         return response;
     } else {
+        console.log(body)
         var document = new DocumentModel(body);
         document.correlativo = await SearchDocument().Correlative(document);
         document.numDoc = `${document.serie}-${document.correlativo}`;

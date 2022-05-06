@@ -160,6 +160,13 @@ const schema = {
         observacion: {
             type: "string",
         },
+        analitica: {
+            type: "string",
+            allOf: [
+                { "minLength": 2 },
+                { "maxLength": 100 }
+            ]
+        },
         legends: {
             type: 'array',
             items: {

@@ -16,7 +16,6 @@ const SearchDocument = () => {
         return 1;
     };
     const All = async (body) => {
-        console.log("body", body);
         let query = {};
         if (body._id) {
             query['_id'] = body._id;
@@ -51,10 +50,10 @@ const SearchDocument = () => {
             if (body.company.ruc) {
                 query['company.ruc'] = body.company.ruc;
             }
-            if (body.client.razonSocial) {
+            if (body.company.razonSocial) {
                 query['company.razonSocial'] = body.company.razonSocial;
             }
-            if (body.client.nombreComercial) {
+            if (body.company.nombreComercial) {
                 query['company.nombreComercial'] = body.company.nombreComercial;
             }
         }
@@ -64,7 +63,6 @@ const SearchDocument = () => {
                 '$lte': new Date(new Date(body.maxfechaEmision).setHours(23, 59, 59))
             };
         }
-        console.log('query', query);
         const documents = await documentSchema_1.DocumentModel.find(query).sort({ correlativo: -1 }).limit(50).lean();
         return documents;
     };

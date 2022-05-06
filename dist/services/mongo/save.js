@@ -12,6 +12,7 @@ const SaveDocument = async (body) => {
         return response;
     }
     else {
+        console.log(body);
         var document = new documentSchema_1.DocumentModel(body);
         document.correlativo = await (0, search_1.SearchDocument)().Correlative(document);
         document.numDoc = `${document.serie}-${document.correlativo}`;

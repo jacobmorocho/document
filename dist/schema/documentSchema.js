@@ -27,6 +27,8 @@ const DocumentSchema = new Schema({
     subTotal: Number,
     mtoImpVenta: Number,
     estado: String,
+    observacion: String,
+    analitica: String,
     formaPago: {
         moneda: String,
         tipo: String

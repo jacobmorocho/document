@@ -19,6 +19,7 @@ interface Document {
     subTotal: number,
     mtoImpVenta: number,
     observacion: string,
+    analitica: string,
     formaPago: FormaPago,
     client: Cliente,
     company: Company,
@@ -185,6 +186,13 @@ const schema: JSONSchemaType<Document> = {
         company: { $ref: '#definitions/company' },
         observacion: {
             type: "string",
+        },
+        analitica: {
+            type: "string",
+            allOf: [
+                { "minLength": 2 },
+                { "maxLength": 100 }
+            ]
         },
         legends: {
             type: 'array',
